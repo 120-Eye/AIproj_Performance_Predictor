@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="assets/perform.png" alt="Student Dashboard Logo" class="logo-img">
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#"><span>📊</span> Overview</a></li>
+                </ul>
+                <ul class="insight-tabs hidden">
+                    <li><a href="#"><span>📈</span> Detailed Overview</a></li>
+                    <li><a href="#"><span>🤖</span> AI Insights</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Tab Container (no top navbar) -->
+            <div class="tab-container">
+                <!-- Tab Panels -->
+                <div class="tab-panels">
+                    <!-- Overview Tab -->
+                    <div id="overview-tab" class="tab-panel active">
+                        <!-- Input Section -->
+                        <section class="input-section">
+                            <h2>Enter Exam Data</h2>
+                            <div class="mode-toggle">
+                                <button type="button" class="mode-btn active" data-mode="single">Single Exam</button>
+                                <button type="button" class="mode-btn" data-mode="multi">Multi Exam</button>
+                            </div>
+                            
+                            <!-- Single Exam Section -->
+                            <div id="singleExamSection">
+                                <form id="singleExamForm">
+                                    <div class="form-actions">
+                                        <h3>Single Exam Entry</h3>
+                                        <button id="clearData" class="btn-secondary">Clear Data</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="studentName">Student Name:</label>
+                                        <input type="text" id="studentName" placeholder="Enter student name" required>
+                                    </div>
+                                    
+                                    <div id="subjectsContainer">
+                                        <h3>Subjects & Marks</h3>
+                                        <div class="subject-row" data-index="0">
+                                        <input type="text" class="subject-name" placeholder="Subject name" aria-label="Subject name" required>
+                                        <input type="number" class="subject-marks" placeholder="Marks (0-100)" min="0" max="100" aria-label="Subject marks" required>
+                                            <button type="button" class="remove-subject" style="display:none;">Remove</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="button" id="addSubject" class="btn-secondary">+ Add Subject</button>
+                                    
+                                    <div class="form-group">
+                                        <label for="attendance">Attendance (%):</label>
+                                        <input type="number" id="attendance" placeholder="95" min="0" max="100" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="examDate">Exam Date:</label>
+                                        <input type="datetime-local" id="examDate" required>
+                                    </div>
+                                    
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-primary" id="singleExamSubmit">Save Single Exam</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Multi Exam Section -->
+                            <div id="multiExamSection" style="display:none;">
+                                <h3>Multi Exam Entries <span id="multiExamCount">(0 exams)</span></h3>
+                                <form id="multiExamForm">
+                                    <div id="multiExamPreviews" class="history-list">
+                                        <!-- Dynamic multi-exam rows added by JS -->
+                                    </div>
+                                    <button type="button" id="addMultiExam" class="btn-secondary">+ Add Multi Exam Entry</button>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-primary" id="multiExamSubmit">Save Multi Exams</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Detailed Overview Tab - Charts + Previews -->
+                    <div id="detailed-overview-tab" class="tab-panel">
+                        <section class="charts-section">
+                            <h2>Performance Charts & Previews</h2>
+                            
+                            <!-- Single Exam Preview (now here) -->
+                            <div id="singlePreviewSection" class="preview-section" style="display:none;">
+                                <h3>Latest Single Exam Preview</h3>
+                                <div class="stats-grid">
+                                    <div class="stat-card">
+                                        <h3 id="previewAvg">-</h3>
+                                        <p>Average Marks</p>
+                                    </div>
+                                    <div class="stat-card">
+                                        <h3 id="previewRisk">-</h3>
+                                        <p>Risk Level</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Multi Exam Preview Stats (now here) -->
+                            <div class="multi-preview-stats" id="multiPreviewStats" style="display:none;">
+                                <h4>Multi Exam Preview Analysis</h4>
+                                <div class="stats-grid">
+                                    <div class="stat-card">
+                                        <h3 id="multiAvgTrend">-</h3>
+                                        <p>Trend Avg</p>
+                                    </div>
+                                    <div class="stat-card">
+                                        <h3 id="multiRisk">-</h3>
+                                        <p>Overall Risk</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="riskLevel" class="stat-card full-width" style="display:none;">
+                                <div class="risk-header">Overall Risk Assessment</div>
+                                <div class="avg">-</div>
+                                <div class="risk-text">-</div>
+                            </div>
+                            
+                            <div class="charts-grid">
+                                <div class="chart-container">
+                                    <h3>Subject-wise Marks (Latest)</h3>
+                                    <canvas id="barChart"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h3>Performance Trend Over Time</h3>
+                                    <canvas id="trendChart"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <h3>Improvement Progress</h3>
+                                    <canvas id="progressChart"></canvas>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- AI Insights Tab -->
+                    <div id="insights-tab" class="tab-panel">
+                        <section class="insights-section">
+                            <h2>AI Analysis</h2>
+                            <div id="loading" class="loading" style="display:none;">Analyzing...</div>
+                            <div id="errorMsg" class="error" style="display:none;"></div>
+                            <div id="aiSummary">-</div>
+                            <div id="aiSuggestions">-</div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Fixed Footer -->
+    <footer class="app-footer">
+        <p>&copy; ALL Rights Reserved by <strong>Hirakjyoti Biswas</strong> | 
+        <a href="https://github.com/120-Eye" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

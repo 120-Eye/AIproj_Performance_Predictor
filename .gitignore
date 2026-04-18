@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Vercel
+.vercel
+
+# Local
+.env
+.env.local
+.env.development
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

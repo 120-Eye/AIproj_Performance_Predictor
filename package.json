@@ -1,0 +1,17 @@
+{
+  "name": "student-performance-dashboard",
+  "version": "1.0.0",
+  "description": "Student Performance Visualization Dashboard with AI insights",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.2.1"
+  },
+  "devDependencies": {
+    "vercel": "latest"
+  }
+}
